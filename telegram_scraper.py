@@ -2,6 +2,7 @@
 
 import os
 import csv
+import json
 import logging
 from telethon import TelegramClient
 from dotenv import load_dotenv
@@ -38,19 +39,32 @@ image_channels = [
 # Define data storage paths
 data_storage_path = './data/raw_data.csv'  # Change to CSV file
 image_storage_path = './data/images/'  # Folder for images
+last_id_storage_path = './data/last_processed_ids.json'  # JSON file for last IDs
 
-# Create image directory if it doesn’t exist
+# Create directories if they don’t exist
 os.makedirs(image_storage_path, exist_ok=True)
+
+# Load the last processed IDs from JSON
+def load_last_processed_ids():
+    if os.path.exists(last_id_storage_path):
+        with open(last_id_storage_path, 'r') as f:
+            return json.load(f)
+    return {}
+
+# Save the last processed IDs to JSON
+def save_last_processed_id(channel, last_id):
+    last_ids = load_last_processed_ids()
+    last_ids[channel] = last_id
+    with open(last_id_storage_path, 'w') as f:
+        json.dump(last_ids, f)
 
 # Function to save messages to a CSV file
 def save_data(data):
-    # Check if the CSV file exists to write headers only if it's new
     file_exists = os.path.isfile(data_storage_path)
 
     with open(data_storage_path, 'a', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=data.keys())
         
-        # Write header only if the file didn't exist before
         if not file_exists:
             writer.writeheader()
         
@@ -58,26 +72,32 @@ def save_data(data):
 
 # Scraping function for both text and images
 async def scrape_telegram():
+    last_ids = load_last_processed_ids()
+
     for channel in text_channels:
         try:
-            async for message in client.iter_messages(channel, limit=scraping_limit):
+            last_id = last_ids.get(channel, 0)  # Start from the last processed message ID
+            entity = await client.get_entity(channel)  # Get channel entity
+            
+            async for message in client.iter_messages(entity, min_id=last_id, limit=scraping_limit):
                 # Prepare message data
                 data = {
-                    'Channel Title': channel,  # Changed to 'Channel Title'
-                    'Channel Username': channel,  # Added 'Channel Username'
-                    'ID': message.id,  # Changed to 'ID'
-                    'Message': message.text or '',  # Handle None text, changed to 'Message'
-                    'Date': message.date.isoformat(),  # Changed to 'Date'
-                    'Media Path': None  # Added 'Media Path'
+                    'Channel Title': entity.title,  # Channel title
+                    'Channel Username': channel,  # Channel username
+                    'ID': message.id,  # Message ID
+                    'Message': message.text or '',  # Message content
+                    'Date': message.date.isoformat(),  # Message date
+                    'Media Path': None  # Media path placeholder
                 }
                 
                 # Check if the channel is designated for image scraping and contains media
                 if channel in image_channels and message.media:
                     media_path = await message.download_media(file=image_storage_path)
-                    data['Media Path'] = media_path  # Set 'Media Path' if media exists
+                    data['Media Path'] = media_path
 
-                # Save the message data
+                # Save the message data and update last processed ID
                 save_data(data)
+                save_last_processed_id(channel, message.id)  # Save last processed ID
                 logging.info(f"Saved message {message.id} from channel {channel}.")
 
         except Exception as e:
