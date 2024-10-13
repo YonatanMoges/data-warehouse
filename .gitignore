@@ -1,3 +1,13 @@
 data
 myenv
 .env
+# Ignore sensitive configuration
+profiles.yml
+
+# Ignore compiled and log files
+target/
+logs/
+
+# Ignore local environment and cache files
+
+.dbt/

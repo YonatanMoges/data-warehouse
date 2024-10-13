@@ -1,0 +1,12 @@
+
+version: 2
+
+models:
+  - name: transformed_data
+    columns:
+      - name: channel_title
+        tests:
+          - not_null
+      - name: message_id
+        tests:
+          - unique

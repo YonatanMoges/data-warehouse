@@ -1,0 +1,7 @@
+# models/sources.yml
+version: 2
+
+sources:
+  - name: cleaned_database          # Replace with the actual name of your database or schema
+    tables:
+      - name: scraped_data       # The name should match your raw data table in the database
