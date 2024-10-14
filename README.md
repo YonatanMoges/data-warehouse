@@ -20,11 +20,10 @@ The repository is structured as follows:
 │   ├── last_processed_ids.json  # Tracks the last processed message IDs for each channel
 │   └── scraping.log          # Log file for tracking the scraping process
 ├── scripts
-│   ├── telegram_scraper.py   # Script for scraping data from Telegram
 │   ├── data_cleaner.py       # Script for cleaning and transforming scraped data
 ├── README.md                 # Project README file
 └── pipeline.log              # Log file for data cleaning and transformation process
-
+│── telegram_scraper.py   # Script for scraping data from Telegram
 ```
 
 
