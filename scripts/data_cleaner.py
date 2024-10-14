@@ -11,7 +11,7 @@ class DataCleaner:
         self.cleaned_data_path = cleaned_data_path
         
         # Set up logging
-        logging.basicConfig(filename='pipeline.log', level=logging.INFO,
+        logging.basicConfig(filename='../logs/pipeline.log', level=logging.INFO,
                             format='%(asctime)s - %(levelname)s - %(message)s')
         
     def load_data(self) -> pd.DataFrame:
