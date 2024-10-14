@@ -38,8 +38,8 @@ To set up and run the project, ensure you have the following installed:
 ### Installation Steps
 Clone the repository:
 ``` bash
-git clone https://github.com/your-username/telegram-data-pipeline.git
-cd telegram-data-pipeline
+git clone https://github.com/YonatanMoges/data-warehouse.git
+cd data-warehouse
 ```
 ### To install the required packages, use:
 ```bash
