@@ -7,6 +7,7 @@
 2. [Project Structure](#project-structure)
 3. [Setup and Installation](#setup-and-installation)
 4. [Usage](#usage)
+5. [Object detection using YOLO](#object-detection-with-yolo)
 
 ## Introduction
 This project focuses on building a robust data scraping and transformation pipeline. The pipeline extracts data from public Telegram channels related to Ethiopian medical businesses, cleans and transforms this data, and implements monitoring and logging systems to ensure data quality. 
@@ -15,15 +16,27 @@ This project focuses on building a robust data scraping and transformation pipel
 The repository is structured as follows:
 ``` bash
 ├── data
-│   ├── raw_data.csv          # Raw data scraped from Telegram
-│   ├── images/               # Folder storing images scraped
+│   ├── raw_data.csv            # Raw data scraped from Telegram
+│   ├── images/                 # Folder storing images scraped
 │   ├── last_processed_ids.json  # Tracks the last processed message IDs for each channel
-│   └── scraping.log          # Log file for tracking the scraping process
-├── scripts
-│   ├── data_cleaner.py       # Script for cleaning and transforming scraped data
-├── README.md                 # Project README file
-└── pipeline.log              # Log file for data cleaning and transformation process
-│── telegram_scraper.py   # Script for scraping data from Telegram
+│   └── scraping.log            # Log file for tracking the scraping process
+├── logs                        # Log directory for pipeline logs
+├── my_project                  # DBT project directory
+├── notebook                    # Jupyter notebooks
+│   ├── __init__.py
+│   ├── data_cleaning.ipynb     # Notebook for data cleaning
+│   └── yolo_detection.ipynb     # Notebook for YOLO object detection
+├── scripts                     # Directory for Python scripts
+│   ├── __init__.py
+│   ├── data_cleaner.py         # Script for cleaning and transforming scraped data
+│   └── yolo_detection.py        # Script for object detection using YOLO
+├── yolov5                      # YOLOv5 cloned repository for object detection
+├── .env                        # Environment variables
+├── .gitignore                  # Git ignore file
+├── README.md                   # Project README file
+├── requirements.txt            # Required packages
+└── telegram_scraper.py         # Script for scraping data from Telegram
+
 ```
 
 
@@ -69,6 +82,12 @@ After scraping, clean and transform the data by running the data_cleaner.py scri
 python scripts/data_cleaner.py
 ```
 
-### Monitoring and Logging
-Logs for both the scraping and cleaning processes can be found in the scraping.log and pipeline.log files in the /data folder. These logs will help you monitor progress and debug any issues.
+## Object Detection with YOLO
+After the data has been scraped and cleaned, you can perform object detection on the images using the YOLO algorithm. To do this, run the yolo_detection.py script, which will process the images and store the detection results in a PostgreSQL database.
 
+``` bash
+python scripts/yolo_detection.py
+```
+
+### Monitoring and Logging
+Logs for both the scraping, cleaning, and detection processes can be found in the scraping.log and other log files in the logs directory. These logs will help you monitor progress and debug any issues.
