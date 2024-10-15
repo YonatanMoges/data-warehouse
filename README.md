@@ -8,6 +8,8 @@
 3. [Setup and Installation](#setup-and-installation)
 4. [Usage](#usage)
 5. [Object detection using YOLO](#object-detection-with-yolo)
+6. [Data Exposure Using FastAPI](#data-exposure-using-fastapi)
+
 
 ## Introduction
 This project focuses on building a robust data scraping and transformation pipeline. The pipeline extracts data from public Telegram channels related to Ethiopian medical businesses, cleans and transforms this data, and implements monitoring and logging systems to ensure data quality. 
@@ -15,6 +17,12 @@ This project focuses on building a robust data scraping and transformation pipel
 ## Project Structure
 The repository is structured as follows:
 ``` bash
+├── app                          # FastAPI application directory
+│   ├── main.py                 # Main application file
+│   ├── database.py             # Database connection and configuration
+│   ├── models.py               # Data models for SQLAlchemy
+│   ├── schemas.py              # Pydantic schemas for data validation
+│   └── crud.py                 # CRUD operations
 ├── data
 │   ├── raw_data.csv            # Raw data scraped from Telegram
 │   ├── images/                 # Folder storing images scraped
@@ -36,7 +44,6 @@ The repository is structured as follows:
 ├── README.md                   # Project README file
 ├── requirements.txt            # Required packages
 └── telegram_scraper.py         # Script for scraping data from Telegram
-
 ```
 
 
@@ -88,6 +95,17 @@ After the data has been scraped and cleaned, you can perform object detection on
 ``` bash
 python scripts/yolo_detection.py
 ```
+
+## Data Exposure Using FastAPI
+To expose the cleaned and transformed data through a RESTful API, you can run the FastAPI application located in the app directory. Start the FastAPI server by running:
+``` bash
+uvicorn app.main:app --reload
+```
+
+### API Endpoints
+POST /businesses/: Create a new medical business entry.  
+GET /businesses/: Retrieve a list of all medical businesses.  
+GET /businesses/{business_id}: Retrieve a specific medical business by its ID.
 
 ### Monitoring and Logging
 Logs for both the scraping, cleaning, and detection processes can be found in the scraping.log and other log files in the logs directory. These logs will help you monitor progress and debug any issues.
